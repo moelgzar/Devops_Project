@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: piplene-deployment
+spec:
+  selector:
+    matchLabels:
+      app: piplene
+  replicas: 2 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: piplene
+    spec:
+      containers:
+        - name: piplene
+          image: mahmoudalgzar995/Devops-project:latest # Image that will be used to containers in the cluster
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080 # The port that the container is running on in the cluster
+
+
+---
+
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata: # Metadata of the resource kind we are creating
+  name: piplene-ssvc
+spec:
+  selector:
+    app: piplene
+  ports:
+    - protocol: "TCP"
+      port: 80
+      targetPort: 8080 
+      nodePort: 30001  # Optionally specify a NodePort or let Kubernetes assign one
+  type: NodePort # Changed from LoadBalancer to NodePort

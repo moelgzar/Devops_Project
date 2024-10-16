@@ -25,4 +25,4 @@ This web application displays lists of board games and their reviews. While anyo
 
 ## Layerd Architecture
 
-![BoardGameListingWebApp](C:\Users\Mahmoud\Downloads\BoardGameListingWebApp.jpg)
+![BoardGameListingWebApp](./docs/BoardGameListingWebApp.jpg)

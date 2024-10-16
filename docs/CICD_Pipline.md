@@ -60,7 +60,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/moelgzar/Devops-Project-new-.git'
+                git branch: 'main', credentialsId: 'git-cred', url: 'https://github.com/moelgzar/Devops_Project.git'
             }
         }
         
@@ -109,7 +109,7 @@ pipeline {
             }
         }
         
-       stage('Publish To Nexus') {
+        stage('Publish To Nexus') {
             steps {
                 withMaven(globalMavenSettingsConfig: 'global-settings', jdk: 'jdk17', maven: 'maven3', mavenSettingsConfig: '', traceability: true) {
                     sh "mvn deploy"
@@ -142,22 +142,53 @@ pipeline {
                 }
             }
         }
-        
-        stage('Deploy To K8s') {
+
+        // New stage to pull the image and run it
+        stage('Pull and Run Docker Image') {
             steps {
-                withKubeConfig(caCertificate: '', clusterName: 'minikube', credentialsId: 'k8-cred', namespace: 'project-space', serverUrl: 'https://192.168.49.2:8443') {
-                    sh "kubectl apply -f deployment-service.yaml -n project-space"
-                }
-            }
-        }
-        
-        stage('Verify the Deployment') {
-            steps {
-                withKubeConfig(caCertificate: '', clusterName: 'minikube', credentialsId: 'k8-cred', namespace: 'project-space', serverUrl: 'https://192.168.49.2:8443') {
-                    sh "kubectl get pods -n webapps"
-                    sh "kubectl get svc  -n webapps"
+                script {
+                    // Pull the Docker image
+                    sh "docker pull mahmoudalgzar995/devops-project:latest"
+
+                    // Run the Docker container with --network host
+                    sh "docker run --network host -d mahmoudalgzar995/devops-project:latest"
                 }
             }
         }
     }
+     post {
+    always {
+        script {
+            def jobName = env.JOB_NAME
+            def buildNumber = env.BUILD_NUMBER
+            def pipelineStatus = currentBuild.result ?: 'UNKNOWN'
+            def bannerColor = pipelineStatus.toUpperCase() == 'SUCCESS' ? 'green' : 'red'
+
+            def body = """
+                <html>
+                <body>
+                <div style="border: 4px solid ${bannerColor}; padding: 10px;">
+                <h2>${jobName} - Build ${buildNumber}</h2>
+                <div style="background-color: ${bannerColor}; padding: 10px;">
+                <h3 style="color: white;">Pipeline Status: ${pipelineStatus.toUpperCase()}</h3>
+                </div>
+                <p>Check the <a href="${BUILD_URL}">console output</a>.</p>
+                </div>
+                </body>
+                </html>
+            """
+
+            emailext (
+                subject: "${jobName} - Build ${buildNumber} - ${pipelineStatus.toUpperCase()}",
+                body: body,
+                to: 'mahmoudalgzar995@gmail.com',
+                from: 'jenkins@example.com',
+                replyTo: 'jenkins@example.com',
+                mimeType: 'text/html',
+                attachmentsPattern: 'trivy-image-report.html'
+            )
+        }
+    }
 }
+}
+```

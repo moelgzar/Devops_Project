@@ -23,6 +23,10 @@ This web application displays lists of board games and their reviews. While anyo
 - Twitter Bootstrap
 - Maven
 
-## Layerd Architecture
+## Tools Overview and Show Cases
 
-![BoardGameListingWebApp](./docs/BoardGameListingWebApp.jpg)
+![BoardGameListingWebApp](./docs/imgs/BoardGameListingWebApp.jpg)
+
+
+## Documentation
+###  **Every thing documented and all things in the project is in [Piplene Documentation](./docs/)**

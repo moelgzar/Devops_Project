@@ -4,7 +4,7 @@
 
 The following VMs are needed for the project:
 
-* **1- Ubuntu VM for K8S**: This VM will be used as the Kubernetes master node.
+* **1- Ubuntu VM for K8S**: This VM will be used as the Kubernetes master node. 
 * **2- Ubuntu VM for Jenkins**: This VM will be used as the Jenkins server.
 * **3- Ubuntu VM for SonarQube**: This VM will be used as the SonarQube server.
 * **4- Ubuntu VM for Nexus**: This VM will be used as the Nexus server.
@@ -187,7 +187,7 @@ docker run -d --name sonar --network host sonarqube:lts-community
 
 ### To create a Docker container named "nexus" on port  and exposing it on port 8081, you can use the following command: 
 ```bash
-    docker run -d --name nexus -network host  sonatype/nexus3:latest
+    docker run -d --name nexus --network host  sonatype/nexus3:latest
 ```    
 ### After running this command, Nexus will be accessible on your host machine at http://IP:8081.
 
@@ -214,5 +214,5 @@ cat admin.password
 ```bash   
 exit
 ```
- This process allows you to access the Nexus admin password stored within the container. Make sure to keep this password secure, as it grants administrative access to your Nexus instance.
+- This process allows you to access the Nexus admin password stored within the container. Make sure to keep this password secure, as it grants administrative access to your Nexus instance.
 
